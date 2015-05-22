@@ -16,6 +16,8 @@
 
 #include "remoteimu/mouse.hh"
 
+#include <iostream>
+
 namespace remoteimu {
   Mouse::Mouse (UDPServer* server, int maxRate) :
     ACCELEROMETER (3), GYROMETER (4), MAGNETOMETER (5),
