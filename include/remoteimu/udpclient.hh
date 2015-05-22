@@ -20,11 +20,11 @@
 #include <string>
 
 namespace remoteimu {
-  class UdpClient
+  class UDPClient
   {
     public:
-      UdpClient(const std::string& addr, int port);
-      ~UdpClient();
+      UDPClient(const std::string& addr, int port);
+      ~UDPClient();
 
       int get_socket() const;
       int get_port() const;

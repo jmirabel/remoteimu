@@ -22,7 +22,7 @@
 #include <stdexcept>
 
 namespace remoteimu {
-  UdpClient::UdpClient(const std::string& addr, int port)
+  UDPClient::UDPClient(const std::string& addr, int port)
     : f_port(port)
       , f_addr(addr)
   {
@@ -47,28 +47,28 @@ namespace remoteimu {
     }
   }
 
-  UdpClient::~UdpClient()
+  UDPClient::~UDPClient()
   {
     freeaddrinfo(f_addrinfo);
     close(f_socket);
   }
 
-  int UdpClient::get_socket() const
+  int UDPClient::get_socket() const
   {
     return f_socket;
   }
 
-  int UdpClient::get_port() const
+  int UDPClient::get_port() const
   {
     return f_port;
   }
 
-  std::string UdpClient::get_addr() const
+  std::string UDPClient::get_addr() const
   {
     return f_addr;
   }
 
-  int UdpClient::send(const char *msg, size_t size)
+  int UDPClient::send(const char *msg, size_t size)
   {
     return sendto(f_socket, msg, size, 0, f_addrinfo->ai_addr, f_addrinfo->ai_addrlen);
   }
