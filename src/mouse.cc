@@ -63,7 +63,7 @@ namespace remoteimu {
     filter_.setQ(q);
 
     ///set the derivation step for the finite difference method
-    stateObservation::Vector dx_ = filter_.stateVectorConstant(1)*1e-4;
+    dx_ = filter_.stateVectorConstant(1)*1e-4;
   }
 
   Mouse::~Mouse ()
@@ -100,6 +100,8 @@ namespace remoteimu {
         continue;
       }
 
+      if (!(sensorParser_.has (ACCELEROMETER) && sensorParser_.has (GYROMETER)
+          && sensorParser_.has (MAGNETOMETER))) continue;
       y.head <3> ()     = sensorParser_.sensorDatas_ [ACCELEROMETER];
       y.segment <3> (3) = sensorParser_.sensorDatas_ [GYROMETER];
       y.tail <3> ()     = sensorParser_.sensorDatas_ [MAGNETOMETER];
@@ -122,14 +124,8 @@ namespace remoteimu {
         (xhk.segment(stateObservation::kine::ori,3));
 
       // Reset position and velocity to 0 from time to time.
-      if (k % 5 == 0) {
-        xhk.segment <3> (stateObservation::kine::linVel).setZero ();
-        std::cout << "==================== Reset ===========================" << std::endl;
-      }
-      if (k % 100 == 0) {
-        xhk.segment <3> (stateObservation::kine::pos).setZero ();
-        std::cout << "==================== Reset ===========================" << std::endl;
-      }
+      xhk.segment <3> (stateObservation::kine::linVel).setZero ();
+      xhk.segment <3> (stateObservation::kine::pos).setZero ();
 
       // give the new value of the state to the kalman filter.
       // This step is usually unnecessary, unless we modify the
@@ -140,6 +136,7 @@ namespace remoteimu {
       if (lastEvent < 0 || (sensorParser_.time_ - lastEvent)*maxRate_ > 1) {
         MouseEventSender::Event e;
         e.type = MouseEventSender::Orientation;
+        for (int i=0;i<3;i++) e.pos[i] = xhk [stateObservation::kine::pos + i];
         for (int i=0;i<3;i++) e.ori[i] = xhk [stateObservation::kine::ori + i];
         me_->mouseEvent (e);
         lastEvent = sensorParser_.time_;

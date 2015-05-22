@@ -98,6 +98,9 @@ namespace remoteimu {
         std::map <SensorID, int> sensorDatasLength_;
 
         void parse (int len, const char* sensorString);
+        bool has (const SensorID sid) const {
+          return sensorDatas_.find (sid) != sensorDatas_.end ();
+        }
       } sensorParser_;
   };
 } // namespace remoteimu
