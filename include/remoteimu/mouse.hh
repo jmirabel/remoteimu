@@ -36,7 +36,7 @@ namespace remoteimu {
       };
       struct Event {
         EventType type;
-        double pos[3], ori[3], linAlg[3], linVel[3];
+        double pos[3], ori[3], q[4], linAlg[3], linVel[3];
       };
       virtual void mouseEvent (const Event e) = 0;
   };
@@ -63,7 +63,7 @@ namespace remoteimu {
       }
 
       /// Receive IMU datas and emit events.
-      /// \param loop if set to true, datas will be read until 
+      /// \param loop if set to true, datas will be read until
       void handleEvents (bool loop = true);
 
       /// Thread-safe
@@ -73,6 +73,7 @@ namespace remoteimu {
 
     private:
       void initFilter ();
+      void clearUDPBuffer ();
 
       MouseEventSender* me_;
       UDPServer* server_;

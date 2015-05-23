@@ -68,6 +68,14 @@ namespace remoteimu {
     dx_ = filter_.stateVectorConstant(1)*1e-4;
   }
 
+  void Mouse::clearUDPBuffer ()
+  {
+    char recvline[1000];
+    while (server_->timed_recv (recvline, 999, 5) >= 0) {
+      // std::cout << "Skip " << recvline << std::endl;
+    }
+  }
+
   Mouse::~Mouse ()
   {
     if (server_) delete server_;
@@ -75,6 +83,8 @@ namespace remoteimu {
 
   void Mouse::handleEvents (bool loop)
   {
+    clearUDPBuffer ();
+
     loop_ = loop;
     char recvline[1000];
     int len, k=0;
@@ -136,10 +146,16 @@ namespace remoteimu {
 
       // Emit an event if necessary
       if (lastEvent < 0 || (sensorParser_.time_ - lastEvent)*maxRate_ > 1) {
+        using namespace stateObservation;
         MouseEventSender::Event e;
         e.type = MouseEventSender::Orientation;
         for (int i=0;i<3;i++) e.pos[i] = xhk [stateObservation::kine::pos + i];
         for (int i=0;i<3;i++) e.ori[i] = xhk [stateObservation::kine::ori + i];
+        Eigen::Quaternion<double> q (
+            kine::rotationVectorToAngleAxis(
+              Vector3(xhk.segment<3>(kine::ori)))
+            );
+        e.q[0]=q.w(); e.q[1]=q.x(); e.q[2]=q.y(); e.q[3]=q.z();
         me_->mouseEvent (e);
         lastEvent = sensorParser_.time_;
       }
