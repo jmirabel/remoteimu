@@ -36,7 +36,7 @@ namespace remoteimu {
       };
       struct Event {
         EventType type;
-        double pos[3], ori[3], q[4], linAlg[3], linVel[3];
+        double pos[3], ori[4], linAlg[3], linVel[3];
       };
       virtual void mouseEvent (const Event e) = 0;
   };
@@ -78,6 +78,9 @@ namespace remoteimu {
       MouseEventSender* me_;
       UDPServer* server_;
       int maxRate_;
+
+      int nbMeasToInit;
+      Eigen::Quaternion<double> q_0;
 
       bool loop_;
 

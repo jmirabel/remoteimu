@@ -22,7 +22,7 @@ namespace remoteimu {
   Mouse::Mouse (UDPServer* server, int maxRate) :
     ACCELEROMETER (3), GYROMETER (4), MAGNETOMETER (5),
     LIN_ACC (82), GRAVITY (83),
-    server_ (server), maxRate_ (maxRate), loop_ (true),
+    server_ (server), maxRate_ (maxRate), nbMeasToInit (100), loop_ (true),
     stateSize (18), measurementSize (9), inputSize(0),
     filter_ (stateSize, measurementSize, inputSize, false, false)
   {
@@ -144,18 +144,27 @@ namespace remoteimu {
       // value of the state esimation which is the case here.
       filter_.setState(xhk,k);
 
+      if (k == nbMeasToInit) {
+        using namespace stateObservation;
+        q_0 = Eigen::Quaternion<double> (
+            kine::rotationVectorToAngleAxis(
+              Vector3(xhk.segment<3>(kine::ori)))
+            ).inverse ();
+      }
+
       // Emit an event if necessary
-      if (lastEvent < 0 || (sensorParser_.time_ - lastEvent)*maxRate_ > 1) {
+      if (k >= nbMeasToInit &&
+          (lastEvent < 0 || (sensorParser_.time_ - lastEvent)*maxRate_ > 1)) {
         using namespace stateObservation;
         MouseEventSender::Event e;
         e.type = MouseEventSender::Orientation;
         for (int i=0;i<3;i++) e.pos[i] = xhk [stateObservation::kine::pos + i];
-        for (int i=0;i<3;i++) e.ori[i] = xhk [stateObservation::kine::ori + i];
-        Eigen::Quaternion<double> q (
-            kine::rotationVectorToAngleAxis(
-              Vector3(xhk.segment<3>(kine::ori)))
-            );
-        e.q[0]=q.w(); e.q[1]=q.x(); e.q[2]=q.y(); e.q[3]=q.z();
+        Eigen::Quaternion<double> q =
+          q_0 * Eigen::Quaternion<double> (
+                  kine::rotationVectorToAngleAxis(
+                    Vector3(xhk.segment<3>(kine::ori)))
+                );
+        e.ori[0]=q.w(); e.ori[1]=q.x(); e.ori[2]=q.y(); e.ori[3]=q.z();
         me_->mouseEvent (e);
         lastEvent = sensorParser_.time_;
       }

@@ -53,10 +53,8 @@ class EventSender : public MouseEventSender
 
     void mouseEvent (const MouseEventSender::Event e) {
       CORBA::Float boxPosition[7];
-      Eigen::Matrix <double, 6, 1> tr;
-      for (int i=0;i<3;i++) tr[i  ] = e.pos[i];
-      for (int i=0;i<3;i++) tr[i+3] = e.ori[i];
-      transRotToCORBA (tr, boxPosition);
+      for (int i=0;i<3;i++) boxPosition[i  ] = e.pos[i];
+      for (int i=0;i<4;i++) boxPosition[i+3] = e.ori[i];
       viz.gui()->applyConfiguration ("example/IMU", boxPosition);
       viz.gui()->refresh ();
     }
