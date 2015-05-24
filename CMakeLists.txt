@@ -35,7 +35,7 @@ SETUP_PROJECT()
 
 SEARCH_FOR_EIGEN()
 ADD_REQUIRED_DEPENDENCY("state-observation")
-ADD_REQUIRED_DEPENDENCY("gepetto-viewer-corba")
+ADD_OPTIONAL_DEPENDENCY("gepetto-viewer-corba")
 FIND_PACKAGE ("X11")
 
 ADD_SUBDIRECTORY (src)
