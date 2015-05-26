@@ -80,7 +80,7 @@ namespace remoteimu {
       int maxRate_;
 
       int nbMeasToInit;
-      Eigen::Quaternion<double> q_0;
+      Eigen::Quaternion<double, Eigen::DontAlign> q_0;
 
       bool loop_;
 

@@ -22,7 +22,8 @@ namespace remoteimu {
   Mouse::Mouse (UDPServer* server, int maxRate) :
     ACCELEROMETER (3), GYROMETER (4), MAGNETOMETER (5),
     LIN_ACC (82), GRAVITY (83),
-    server_ (server), maxRate_ (maxRate), nbMeasToInit (100), loop_ (true),
+    server_ (server), maxRate_ (maxRate), nbMeasToInit (100),
+    q_0 (1, 0, 0, 0), loop_ (true),
     stateSize (18), measurementSize (9), inputSize(0),
     filter_ (stateSize, measurementSize, inputSize, false, false)
   {
