@@ -93,12 +93,10 @@ namespace remoteimu {
     stateObservation::Vector y (measurementSize);y.setZero();
 
     do {
-      len = server_->recv (recvline, 999);
+      len = server_->timed_recv (recvline, 999, 5);
       if (len < 0) {
-        // That should not happen since the call blocks until there is
-        // something to read.
-        std::cerr << "No data received" << std::endl;
-        continue;
+        if (loop_) continue;
+        else break;
       }
       recvline[len] = '\0';
 
