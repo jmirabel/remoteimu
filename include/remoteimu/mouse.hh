@@ -71,6 +71,10 @@ namespace remoteimu {
         loop_ = false;
       }
 
+      /// Set the initial rotation.
+      void setInitialQuat (const Eigen::Quaterniond q);
+
+
     private:
       void initFilter ();
       void clearUDPBuffer ();
@@ -80,7 +84,7 @@ namespace remoteimu {
       int maxRate_;
 
       int nbMeasToInit;
-      Eigen::Quaternion<double, Eigen::DontAlign> q_0;
+      Eigen::Quaternion<double, Eigen::DontAlign> q_j0, q_m0_inv;
 
       bool loop_;
 
