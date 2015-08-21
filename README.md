@@ -3,7 +3,7 @@ Library rebuilding IMU attitude from IMU data send through UDP socket
 
 ## Installation instructions
 ### Dependencies
-* [state-observation] (you might have to install my [fork] in case the latest pull request has not been accepted).
+* [state-observation],
 * Optionnally, [gepetto-viewer-corba], if you want to try it directly after installation.
 
 ## Instructions
@@ -28,6 +28,5 @@ mouse.handleEvents (true);
 * Enhancing the SensorDataParser in order to handle inputs from other streams.
 
 [state-observation]:https://github.com/stack-of-tasks/sot-state-observation
-[fork]:https://github.com/jmirabel/state-observation
 [gepetto-viewer-corba]:https://github.com/humanoid-path-planner/gepetto-viewer-corba
 [Sensorstream IMU+GPS]:https://play.google.com/store/apps/details?id=de.lorenz_fenster.sensorstreamgps
